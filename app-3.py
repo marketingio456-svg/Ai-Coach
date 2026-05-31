@@ -1,8 +1,4 @@
 """
-ExamZen AI Study Coach for JEE/NEET Aspirants
-Version 3.0 | Production-Ready | Mobile-First
-Model: gemini-1.5-flash (15 RPM free quota)
-"""
 import streamlit as st
 import os
 import time
