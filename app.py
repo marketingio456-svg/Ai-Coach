@@ -1,3 +1,4 @@
+This error and what is solution
 import streamlit as st
 import os
 import time
@@ -285,7 +286,6 @@ header, [data-testid="collapsedControl"], .stDeployButton, footer, #MainMenu {
    border-radius: 4px 16px 16px 16px;
    font-size: 0.9rem;
    line-height: 1.6;
-   max-width: 88%;
    color: var(--text-primary) !important;
 }
 
@@ -387,10 +387,10 @@ def initialize_gemini_client():
        return None
 
 def execute_model_query(client, prompt: str, system_context: str) -> dict:
-   """Dispatches pipeline strings with safe catching definitions."""
+   """Dispatches strings safely using the gemini-2.0-flash endpoint framework."""
    try:
        response = client.models.generate_content(
-           model="gemini-1.5-flash",
+           model="gemini-2.0-flash",
            contents=prompt,
            config=types.GenerateContentConfig(
                system_instruction=system_context,
@@ -531,7 +531,6 @@ with tab_mentor_bot:
    if not api_client:
        st.info("Unlock this feature by mapping an active engine credential in the cloud dashboard settings.")
    else:
-       # Display persistent conversations
        for chat_node in st.session_state.chat_history:
            if chat_node["user_type"] == "student":
                st.markdown(f'<div class="chat-row-user"><div class="chat-bubble-user">{chat_node["msg"]}</div></div>', unsafe_allow_html=True)
