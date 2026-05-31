@@ -1,8 +1,3 @@
-import streamlit as st
-import os
-import time
-from google import genai
-from google.genai import types
 
 # ==============================================================================
 # 1. PAGE CONFIGURATION (MUST BE THE ABSOLUTE FIRST STREAMLIT COMMAND)
