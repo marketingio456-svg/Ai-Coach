@@ -17,7 +17,7 @@ else:
    st.error("Missing API Key! Please verify GEMINI_API_KEY inside your Streamlit Cloud secrets configuration panel.")
 
 # Initialize the model correctly (No .models attribute)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 # 3. Inject Your Custom UI Theme Variables & Global Styles
 st.markdown("""
