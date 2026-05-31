@@ -7,7 +7,7 @@ from google.generativeai import types
 # 1. PAGE CONFIGURATION (MUST BE THE ABSOLUTE FIRST STREAMLIT COMMAND)
 # ==============================================================================
 st.set_page_config(
-   page_title="ExamZen AI Study Coach",
+   page_title="AI Coach - JEE/NEET Study Assistant",
    page_icon="🎓",
    layout="centered",
    initial_sidebar_state="collapsed"
@@ -473,8 +473,8 @@ else:
 st.markdown(f"""
 <div class='ez-header'>
    <div class='ez-logo'>
-       <div class='ez-logo-icon'>🎓</div>
-       <div class='ez-logo-text'>Exam<span>Zen</span></div>
+       <div class='ez-logo-icon'>🤖</div>
+       <div class='ez-logo-text'>AI <span>Coach</span></div>
    </div>
    {badge_element}
 </div>
@@ -489,9 +489,9 @@ tab_dashboard, tab_mentor_bot, tab_correct_bot, tab_plan_bot = st.tabs(["Hub", "
 with tab_dashboard:
    st.markdown("""
    <div class="hero-box">
-       <div class="hero-badge">JEE & NEET Engine v3.0</div>
-       <div class="hero-title">Prepare Strategic. <span>Rank Supreme.</span></div>
-       <div class="hero-subtitle">Access predictive mentorship frameworks designed to rapidly accelerate foundational test scores.</div>
+       <div class="hero-badge">JEE & NEET AI Coach v1.0</div>
+       <div class="hero-title">Smart Learning. <span>Better Scores.</span></div>
+       <div class="hero-subtitle">AI-powered study assistance designed to help you master JEE and NEET concepts with personalized guidance.</div>
    </div>
    
    <div class="feat-card">
@@ -613,6 +613,6 @@ with tab_plan_bot:
                        st.download_button(
                            label="Export Routine Blueprint File (.txt)",
                            data=planner_report["text"],
-                           file_name="examzen_revision_routine.txt",
+                           file_name="ai_coach_revision_routine.txt",
                            mime="text/plain"
                        )
