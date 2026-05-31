@@ -1,3 +1,7 @@
+import streamlit as st
+import os
+import google.generativeai as genai
+from google.generativeai import types
 
 # ==============================================================================
 # 1. PAGE CONFIGURATION (MUST BE THE ABSOLUTE FIRST STREAMLIT COMMAND)
@@ -376,7 +380,8 @@ def initialize_gemini_client():
    if not api_key:
        return None
    try:
-       return genai.Client(api_key=api_key)
+       genai.configure(api_key=api_key)
+       return genai
    except Exception:
        return None
 
@@ -441,7 +446,13 @@ Provide the following structural output exactly:
 ### ⚡ The Accurate Solution Method
 ### 📚 Key Topics to Revise"""
 
-PLANNER_CORE_TRAINING = """You are PlannerAI, a time management engine optimization framework utilizing spaced repetition schedules for competitive exam prep. Generate structured, actionable revision timelines matching the requested timeframe parameters."""
+PLANNER_CORE_TRAINING = """You are PlannerAI, a time management engine optimization framework utilizing spaced repetition schedules for competitive exam prep. Generate structured, actionable revision schedules.
+OUTPUT FORMAT:
+### 📅 7-Day Revision Blueprint
+### ⚡ Daily Breakdown Schedule
+### 🎯 Priority Weak Topics Allocation
+### 💪 Maintenance Strong Topics Routine
+Focus on realistic, implementable study schedules with optimal spacing intervals."""
 
 # ==============================================================================
 # 5. VOLATILE SESSION MEMORY REPOSITORIES
@@ -594,7 +605,7 @@ with tab_plan_bot:
            if not lagging_chapters.strip():
                st.error("Please add vulnerable focus areas to map out scheduling constraints.")
            else:
-               planner_payload = f"Milestone Tier: {target_exam_tier}\nWeak Focus Priorities: {lagging_chapters}\nStrong Maintenance Chapters: {proficient_chapters}\nAvailable Daily Allocation: {daily_session_duration} Hours"
+               planner_payload = f"Milestone Tier: {target_exam_tier}\nWeak Focus Priorities: {lagging_chapters}\nStrong Maintenance Chapters: {proficient_chapters}\nAvailable Daily Allocation: {daily_session_duration} hours"
                with st.spinner("Processing optimization routine paths..."):
                    planner_report = execute_model_query(api_client, planner_payload, PLANNER_CORE_TRAINING)
                    display_response_output(planner_report)
