@@ -10,14 +10,14 @@ st.set_page_config(
    initial_sidebar_state="collapsed"
 )
 
-# 2. Configure Gemini API Key Cleanly
+# 2. Configure Gemini API Key Safely
 if "GEMINI_API_KEY" in st.secrets:
    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 else:
    st.error("Missing API Key! Please verify GEMINI_API_KEY inside your Streamlit Cloud secrets configuration panel.")
 
-# Initialize the model correctly (No .models attribute)
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+# FIX: Added 'models/' prefix to fully qualify the path and clear the 400 error
+model = genai.GenerativeModel('models/gemini-1.5-flash')
 
 # 3. Inject Your Custom UI Theme Variables & Global Styles
 st.markdown("""
@@ -120,7 +120,6 @@ tabs = st.tabs(["Hub", "Mentor Chat", "Correctify AI", "Review"])
 with tabs[0]:
    st.markdown("<h3 style='color: #F1F5F9; margin-bottom: 20px;'>ExamZen Core Hub</h3>", unsafe_allow_html=True)
    
-   # Grid metrics using standard Streamlit columns combined with custom CSS cards
    col1, col2, col3 = st.columns(3)
    with col1:
        st.markdown("""
@@ -147,7 +146,6 @@ with tabs[0]:
    st.markdown("<h4 style='color: #F1F5F9; margin-top: 15px;'>Recent Core Tasks</h4>", unsafe_allow_html=True)
    st.info("💡 Tip: Use the **Mentor Chat** tab to instantly break down any complex formulas or theorems you find confusing.")
    
-   # Task list layout items
    st.checkbox("Review Organic Chemistry reaction mechanisms", value=True)
    st.checkbox("Analyze calculus derivation errors in Correctify AI", value=False)
    st.checkbox("Complete Mock Physics Assessment Set 3", value=False)
@@ -158,23 +156,18 @@ with tabs[1]:
    st.markdown("<h2 style='color: #F1F5F9; margin-bottom: 4px;'>Arya Core Mentorship</h2>", unsafe_allow_html=True)
    st.markdown("<p style='color: #94A3B8; margin-bottom: 24px;'>Ask questions about formulas, mechanisms, or theorems across Physics, Chemistry, Math, and Biology.</p>", unsafe_allow_html=True)
    
-   # Track localized persistent conversational state matrix
    if "chat_history" not in st.session_state:
        st.session_state.chat_history = []
        
-   # Display previous message blocks cleanly
    for msg in st.session_state.chat_history:
        with st.chat_message(msg["role"]):
            st.markdown(msg["content"])
            
-   # Process User Query Submissions
    if user_query := st.chat_input("Ask Arya to explain a complex topic..."):
-       # Append User Input
        st.session_state.chat_history.append({"role": "user", "content": user_query})
        with st.chat_message("user"):
            st.markdown(user_query)
            
-       # Compile Model Response Content Stream
        try:
            with st.chat_message("assistant"):
                with st.spinner("Compiling insights..."):
@@ -184,7 +177,6 @@ with tabs[1]:
        except Exception as api_err:
            st.error(f"Execution Exception encountered: {api_err}")
            
-   # Clear Matrix Controls Context
    st.write("")
    if st.button("Reset Conversation Matrix", key="reset_chat"):
        st.session_state.chat_history = []
@@ -196,8 +188,7 @@ with tabs[2]:
    st.markdown("<h3 style='color: #F1F5F9; margin-bottom: 4px;'>Correctify AI Engine</h3>", unsafe_allow_html=True)
    st.markdown("<p style='color: #94A3B8; margin-bottom: 20px;'>Submit problem steps here to parse runtime logical flow errors, calculation slips, or derivation mistakes.</p>", unsafe_allow_html=True)
    
-   # Inputs for Problem Checking
-   problem_statement = st.text_area("1. Paste the Question / Problem Statement:", placeholder="e.g., Integrate x*ln(x) dx or Find the net force...")
+   problem_statement = st.text_area("1. Paste the Question / Problem Statement:", placeholder="e.g., Integrate x*ln(x) dx...")
    user_steps = st.text_area("2. Paste your Step-by-Step Working / Derivation:", placeholder="Step 1: ...\nStep 2: ...", height=200)
    
    if st.button("Analyze Derivation Flow", type="primary", use_container_width=True):
@@ -206,7 +197,7 @@ with tabs[2]:
        else:
            with st.spinner("Scanning logic matrices for errors..."):
                prompt = f"""
-               You are an elite academic evaluator. Analyze the following problem and user-provided working steps for any errors (mathematical, logical, conceptual, or computational).
+               You are an elite academic evaluator. Analyze the following problem and user-provided working steps for any errors.
                
                Problem Statement:
                {problem_statement}
@@ -214,10 +205,7 @@ with tabs[2]:
                User's Steps:
                {user_steps}
                
-               Provide a clear, formatted breakdown highlighting:
-               1. Where the mistake occurs (if any).
-               2. Why it is incorrect.
-               3. The correct path/calculation to resolve it.
+               Provide a clear, formatted breakdown highlighting where any mistake occurs and how to fix it.
                """
                try:
                    analysis_response = model.generate_content(prompt)
@@ -232,13 +220,11 @@ with tabs[3]:
    st.markdown("<h3 style='color: #F1F5F9; margin-bottom: 4px;'>Performance Analytical Review</h3>", unsafe_allow_html=True)
    st.markdown("<p style='color: #94A3B8; margin-bottom: 20px;'>Track performance metrics and concepts flagged for critical revision.</p>", unsafe_allow_html=True)
    
-   # Generate mock data for visualization tracking
    chart_data = pd.DataFrame(
        np.random.randint(65, 98, size=(10, 3)),
        columns=['Physics Accuracy', 'Chemistry Accuracy', 'Math Accuracy']
    )
    
-   # Layout splits for metrics graph and high priority items
    col_graph, col_list = st.columns([2, 1])
    
    with col_graph:
